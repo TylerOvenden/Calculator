@@ -3,13 +3,22 @@ let curOp = "";
 let firstNum = "";
 let secondNum = "";
 let dis = document.getElementById('display');
+let clr = document.getElementById('clear');
+
+
 dis.textContent = "0";
+
+justEntered = false;
+
 let equal = document.getElementById('equal');  
 equal.addEventListener("click", (e) => {
    
     compute();
 
 });
+
+
+
 
 const numbers = document.querySelectorAll(".num");
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,6 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
 });
+clr.addEventListener("click", clearNum);
+
+
+function clearNum(){
+    firstNum = "";
+    secondNum = "";
+    curOp = ""; 
+    dis.textContent = "0";
+
+
+}
 op.forEach((oper) => {
     console.log(oper);
     oper.addEventListener("click", (e) => {
@@ -48,8 +68,13 @@ function display() {
 function addNum(number) {
     if(firstNum.length < 5){
        //only add 1 decimal to a number at a time
-        if(number === "." && firstNum.includes(".")) 
+        if(number === "." && secondNum.includes(".")) 
             return;
+        
+        if(justEntered){
+            secondNum = "";
+            justEntered = false;
+        }    
 
             secondNum += number;
     console.log(secondNum);
@@ -62,10 +87,18 @@ function getOp(op){
 
     firstNum = secondNum;
     secondNum = "";
-   
+     if(justEntered)
+        justEntered = false;
     
 
 }
+
+//function to check number of decimals in number
+var countDecimals = function (value) {
+    if(Math.floor(value) === value) return 0;
+    return value.toString().split(".")[1].length || 0;
+    }
+
 
 function compute(){
     console.log(firstNum);
@@ -73,8 +106,8 @@ function compute(){
     console.log(secondNum);
     let res = '0';
 
-    let num1 = parseInt(firstNum);
-    let num2 = parseInt(secondNum);
+    let num1 = parseFloat(firstNum);
+    let num2 = parseFloat(secondNum);
         if(curOp === "+"){
             res = num1+num2;
             console.log(res);
@@ -94,12 +127,17 @@ function compute(){
                 clear();
             }
             else{
-            res = num1/num2;
+          // res = num1/num2;
+            res = num1/num2
+            if(countDecimals(res) > 3)
+            res = res.toFixed(3);
+
             console.log(res);
             }
         }
         let full = firstNum + "  " + curOp + "  " + secondNum + " = " + res;
         dis.textContent = full;
+        justEntered = true;
        
 }
 function clear(){
