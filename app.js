@@ -118,6 +118,9 @@ function compute(){
         }
         if(curOp === "*"){
             res = num1 * num2;
+            if(countDecimals(res) > 3)
+            res = res.toFixed(3);
+            
             console.log(res);
         }
         if(curOp === "/"){
